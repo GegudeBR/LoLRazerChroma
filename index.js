@@ -1,7 +1,5 @@
-const config = require('./src/config.js');
-const effects = require('./src/effects.js');
-const https = require('https');
 const ChromaSDK = require('./src/ChromaSDK.js');
+const PlayerData = require('./src/PlayerData.js');
 
 const delay = ms =>
   new Promise((res, rej) => {
@@ -26,8 +24,12 @@ async function start() {
   try {
     let chroma = new ChromaSDK(app);
     await chroma.connect();
-    await delay(10000);
-    await chroma.destruct();
+    await delay(1000);
+    let player = new PlayerData(chroma);
+    player.update_data();
+    await delay(1000000);
+
+    //await chroma.destruct();
     console.log('done');
   } catch (err) {
     console.error(err);
