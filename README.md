@@ -11,7 +11,9 @@ Run it by executing `run-league-chroma.bat`.
 
 ## Functionalities
 
+- Ally Dragon Animation
 - Animated Health Bar
 - Animated Resource Bar
 - Death Animation
 - Level up Animation
+
