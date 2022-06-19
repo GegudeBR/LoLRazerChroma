@@ -50,7 +50,7 @@ class CromaSDK {
       keyboard_object = JSON.stringify({ "effect": effect, "param": data });
     }
 
-    console.log(keyboard_object);
+    //console.log(keyboard_object);
     const keyboard_response = await fetch(`${this.uri}/keyboard`, {
       method: method_used,
       headers: {
@@ -59,7 +59,7 @@ class CromaSDK {
       body: keyboard_object
     });
     let response = await keyboard_response.json();
-    console.log(response)
+    //console.log(response)
     console.log('keyboard_effect(' + effect, + ', ' + data + ', ' + precreate + ') returns ' + response.result);
     if (precreate) {
       return response.id;

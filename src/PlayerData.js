@@ -9,23 +9,29 @@ class PlayerData {
   }
 
   async update_data() {
-
-    const request = await fetch('https://127.0.0.1:2999/liveclientdata/activeplayer', {
-      method: 'GET',
-      agent: new https.Agent({
-        rejectUnauthorized: false,
+     
+    // Try to get player data
+    try {
+      const request = await fetch('https://127.0.0.1:2999/liveclientdata/activeplayer', {
+        method: 'GET',
+        agent: new https.Agent({
+          rejectUnauthorized: false,
+        })
       })
-    })
-    const response = await request.json();
-    this.player_health_max = response.championStats.maxHealth;
-    this.player_health_current = response.championStats.currentHealth;
-    this.player_resource_type = response.championStats.resourceType;
-    this.player_resource_max = response.championStats.resourceMax;
-    this.player_resource_current = response.championStats.resourceValue;
-    this.player_health_percent = (this.player_health_current / this.player_health_max) * 100;
-    this.player_resource_percent = (this.player_resource_current / this.player_resource_max) * 100;
-    console.log(this.player_resource_type, this.player_resource_percent);
-    this.display_chroma();
+      const response = await request.json();
+      this.player_health_max = response.championStats.maxHealth;
+      this.player_health_current = response.championStats.currentHealth;
+      this.player_resource_type = response.championStats.resourceType;
+      this.player_resource_max = response.championStats.resourceMax;
+      this.player_resource_current = response.championStats.resourceValue;
+      this.player_health_percent = (this.player_health_current / this.player_health_max) * 100;
+      this.player_resource_percent = (this.player_resource_current / this.player_resource_max) * 100;
+      console.log(this.player_resource_type, this.player_resource_percent);
+      this.display_chroma();
+    }
+    catch (error) {
+      console.log("League of Legends API is not running");
+    }
   }
 
   async display_chroma() {
@@ -43,7 +49,7 @@ class PlayerData {
       }
 
     } else { // Player is alive
-      // Set Health Bar
+      // Set Health Bar (1-Backspace)
       for (c = 2; c < (3 + (12 * (this.player_health_percent / 100.0))); c++) {
         var green = (this.player_health_percent / 100.0) * 0xff;
         var red = 0xff - ((this.player_health_percent / 100.0) * 0xff);
@@ -57,6 +63,8 @@ class PlayerData {
         if (this.player_resource_type == "MANA") {
           key[0][c] = 0x01000000 | 0xff0000;
         } else if (this.player_resource_type == "ENERGY") {
+          key[0][c] = 0x01000000 | 0x00ffff;
+        } else if (this.player_resource_type == "RAGE") {
           key[0][c] = 0x01000000 | 0x0000ff;
         }
       }
