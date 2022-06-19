@@ -12,6 +12,7 @@ class PlayerData {
     this.chromasdk = cromasdk;
     this.player_alive = true;
     this.playing_animation = false;
+    this.leveled = false;
     this.refresh = setInterval(() => this.update_data(), 100);
   }
 
@@ -26,6 +27,11 @@ class PlayerData {
         })
       })
       const response = await request.json();
+      this.leveled = false;
+      if(this.player_level != response.level) {
+        this.leveled = true;
+      }
+      this.player_level = response.level;
       this.player_health_max = response.championStats.maxHealth;
       this.player_health_current = response.championStats.currentHealth;
       this.player_resource_type = response.championStats.resourceType;
@@ -75,7 +81,7 @@ class PlayerData {
 
   get_health_data() {
     if(this.is_alive()) { // Player is alive
-      for (var c = 2; c < (3 + (12 * (this.player_health_percent / 100.0))); c++) {
+      for (var c = 1; c < (3 + (12 * (this.player_health_percent / 100.0))); c++) {
         var green = (this.player_health_percent / 100.0) * 0xff;
         var red = 0xff - ((this.player_health_percent / 100.0) * 0xff);
         var color = (green) << 8 | red;
@@ -91,7 +97,7 @@ class PlayerData {
 
   get_resource_data() {
     if(this.is_alive()) { // Player is alive
-      for (var c = 2; c < (2 + (13 * (this.player_resource_percent / 100.0))); c++) {
+      for (var c = 1; c < (2 + (13 * (this.player_resource_percent / 100.0))); c++) {
         if (this.player_resource_type == "MANA") {
           this.key[0][c] = 0x01000000 | 0xff0000;
         } else if (this.player_resource_type == "ENERGY") {
@@ -103,22 +109,48 @@ class PlayerData {
     }
   }
 
+  async levelup_animation() {
+    this.playing_animation = true;
+
+    for(var i = 5; i >= 1; i--) {
+      this.clear_chroma_data();
+      this.get_health_data();
+      this.get_resource_data();
+      this.key[i][1] = 0x01000000 | 0x00ffff;
+      if (i == 5) {
+        this.key[i][2] = 0x01000000 | 0x00ffff;
+      }
+      await this.chromasdk.keyboard_effect("CHROMA_CUSTOM_KEY", {
+        "key": this.key,
+        "color": this.color
+      });
+      await delay(100);
+    }
+
+    this.playing_animation = false;
+  }
+
   async death_animation() {
     return new Promise(async (resolve) => {
       this.playing_animation = true;
-      
+      let total_frames = 500 * 2 * 10;
       // For loop to animate death
-      for (var i = 0; i <= 4500; i+=500) {
+      for (var i = 0; i <= total_frames; i+=500) {
         setTimeout(() => this.chromasdk.keyboard_effect("CHROMA_STATIC", 0xff), i);
         i+=500;
         setTimeout(() => this.chromasdk.keyboard_effect("CHROMA_NONE", null), i);
       }
-      setTimeout(() => this.playing_animation = false, 4500);
-      setTimeout(() => resolve(), 4500);
+      setTimeout(() => this.playing_animation = false, total_frames);
+      setTimeout(() => resolve(), total_frames);
     });
   }
 
   async update_chroma(keys, color) {
+
+    if(this.leveled) {
+      this.levelup_animation();
+    }
+
     if (this.is_alive() == false && this.player_alive == true) { // If player just died
       await this.death_animation();
     }
@@ -129,7 +161,7 @@ class PlayerData {
 
     this.chromasdk.keyboard_effect('CHROMA_CUSTOM_KEY', {
       "key": this.key,
-      "color": this.color
+      "color": this.color,
     });
 
   }

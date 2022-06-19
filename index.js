@@ -28,8 +28,8 @@ async function start() {
   try {
     
     await chroma.connect();
-    await delay(1000);
-    await player.death_animation();
+    await delay(10000);
+    await player.levelup_animation();
 
     //await chroma.destruct();
     console.log('done');
