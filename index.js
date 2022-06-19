@@ -28,11 +28,11 @@ async function start() {
   try {
     
     await chroma.connect();
-    await delay(10000);
+    await delay(5000);
     await player.levelup_animation();
+    await delay(2000);
+    await player.ally_dragon_animation();
 
-    //await chroma.destruct();
-    console.log('done');
   } catch (err) {
     console.error(err);
   }

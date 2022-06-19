@@ -1,4 +1,18 @@
 const fetch = require('cross-fetch');
+
+const delay = ms =>
+  new Promise((res, rej) => {
+    setTimeout(res, ms);
+  });
+
+const debug = false;
+
+function print(...args) {
+  if (debug) {
+    console.log(...args);
+  }
+}
+
 class CromaSDK {
 
   constructor(application) {
@@ -7,24 +21,30 @@ class CromaSDK {
 
   async send_heartbeat() {
     const heartbeat_response = await fetch(`${this.uri}/heartbeat`, { method: 'PUT' });
-    console.log(await heartbeat_response.json());
+    print(await heartbeat_response.json());
   }
 
   // Create first connection
   async connect() {
-    const create_response = await fetch('http://localhost:54235/razer/chromasdk', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(this.application)
-    });
-    let response = await create_response.json();
-    this.uri = response.uri;
-    this.sessionid = response.sessionid;
-    console.log(`Created Chroma at ${this.uri}`);
+    try{
+      const create_response = await fetch('http://localhost:54235/razer/chromasdk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(this.application)
+      });
+      let response = await create_response.json();
+      this.uri = response.uri;
+      this.sessionid = response.sessionid;
+      print(`Created Chroma at ${this.uri}`);
 
-    this.heartbeat = setInterval(() => this.send_heartbeat(), 10000);
+      this.heartbeat = setInterval(() => this.send_heartbeat(), 10000);
+    } catch (err) {
+      console.error(err);
+      await delay(10000);
+      await this.connect();
+    }
   }
 
   async keyboard_effect(effect, data, precreate = false) {
@@ -50,7 +70,7 @@ class CromaSDK {
       keyboard_object = JSON.stringify({ "effect": effect, "param": data });
     }
 
-    //console.log(keyboard_object);
+    //print(keyboard_object);
     const keyboard_response = await fetch(`${this.uri}/keyboard`, {
       method: method_used,
       headers: {
@@ -59,8 +79,8 @@ class CromaSDK {
       body: keyboard_object
     });
     let response = await keyboard_response.json();
-    //console.log(response)
-    console.log('keyboard_effect(' + effect, + ', ' + data + ', ' + precreate + ') returns ' + response.result);
+    //print(response)
+    print('keyboard_effect(' + effect, + ', ' + data + ', ' + precreate + ') returns ' + response.result);
     if (precreate) {
       return response.id;
     }
@@ -75,7 +95,7 @@ class CromaSDK {
       },
       body: effect_object
     });
-    //console.log(effect_response.result);
+    print(effect_response.result);
   }
 
   // Detruct connection

@@ -6,6 +6,12 @@ const delay = ms =>
     setTimeout(res, ms);
   });
 
+function between(min, max) {
+  return Math.floor(
+    Math.random() * (max - min + 1) + min
+  )
+}
+
 class PlayerData {
 
   constructor(cromasdk) {
@@ -102,12 +108,83 @@ class PlayerData {
           this.key[0][c] = 0x01000000 | 0xff0000;
         } else if (this.player_resource_type == "ENERGY") {
           this.key[0][c] = 0x01000000 | 0x00ffff;
-        } else if (this.player_resource_type == "RAGE") {
+        } else {
           this.key[0][c] = 0x01000000 | 0x0000ff;
         }
       }
     }
   }
+
+  async background_animation(background_color, details_color) {
+    this.clear_chroma_data();
+    for (var r = 0; r < 6; r++) {
+      for (var c = 0; c < 22; c++) {
+        this.key[r][c] = 0x01000000 | background_color;;
+      }
+    }
+    for(var r = 0; r < 15; r++) {
+      this.key[between(1, 5)][between(0, 21)] = 0x01000000 | details_color;
+    }
+    await this.chromasdk.keyboard_effect("CHROMA_CUSTOM_KEY", {
+      "key": this.key,
+      "color": this.color
+    });
+  }
+
+  async ally_dragon_animation() {
+
+    var background_color;
+    var details_color;
+    this.dragon_type = "Water";
+    if (this.dragon_type == "Hextech") { // Good colors
+      background_color = 0x00ff00;
+      details_color = 0xffffff;
+    } else if (this.dragon_type == "Fire") { // Good colors
+      background_color = 0x0000ff;
+      details_color = 0x00ffff;
+    } else if (this.dragon_type == "Earth") { // Can get better
+      background_color = 0x003f7f;
+      details_color = 0x005fbf;
+    } else if (this.dragon_type == "Air") { // Can get better 
+      background_color = 0xffffff;
+      details_color = 0xe8e8e8;
+    } else if (this.dragon_type == "Water") { // Change details color (ligher than background usually better) 
+      background_color = 0xbfbf00;
+      details_color = 0xbaba16;
+    }
+
+    return new Promise(async (resolve) => {
+      this.playing_animation = true;
+      var i = 0;
+      var total_frames = 0
+      var blink_duration = 200;
+      // Blink twice
+      for (i = 0; i <= 2 * blink_duration; i += blink_duration) {
+        setTimeout(() => this.chromasdk.keyboard_effect("CHROMA_STATIC", background_color), i);
+        i += blink_duration;
+        setTimeout(() => this.chromasdk.keyboard_effect("CHROMA_NONE", null), i);
+      }
+      setTimeout(() => this.chromasdk.keyboard_effect("CHROMA_STATIC", background_color), i); // 400
+      total_frames = i;
+
+      // Background animation
+      for(i = 0; i <= 1000; i+=100) {
+        setTimeout(() => this.background_animation(background_color, details_color), i + total_frames);
+      }
+      total_frames += i;
+
+      // Blink twice
+      for (i = 0; i <= 2 * blink_duration; i += blink_duration) {
+        setTimeout(() => this.chromasdk.keyboard_effect("CHROMA_STATIC", background_color), i + total_frames);
+        i += blink_duration;
+        setTimeout(() => this.chromasdk.keyboard_effect("CHROMA_NONE", null), i + total_frames);
+      }
+      total_frames += i;
+
+      setTimeout(() => this.playing_animation = false, total_frames);
+      setTimeout(() => resolve(), total_frames);
+    });
+  } 
 
   async levelup_animation() {
     this.playing_animation = true;
@@ -148,7 +225,7 @@ class PlayerData {
   async update_chroma(keys, color) {
 
     if(this.leveled) {
-      this.levelup_animation();
+      await this.levelup_animation();
     }
 
     if (this.is_alive() == false && this.player_alive == true) { // If player just died
@@ -159,7 +236,7 @@ class PlayerData {
       return
     }
 
-    this.chromasdk.keyboard_effect('CHROMA_CUSTOM_KEY', {
+    await this.chromasdk.keyboard_effect('CHROMA_CUSTOM_KEY', {
       "key": this.key,
       "color": this.color,
     });
