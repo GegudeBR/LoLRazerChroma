@@ -6,7 +6,7 @@ Razer Chroma integrration for League of Legends build in JavaScript
 ...
 
 ## Running
-
+Currently you need NodeJS and NPM to use the program.
 Run it by executing `run-league-chroma.bat`.
 
 ## Functionalities
