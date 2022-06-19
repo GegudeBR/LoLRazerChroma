@@ -26,8 +26,7 @@ async function start() {
     await chroma.connect();
     await delay(1000);
     let player = new PlayerData(chroma);
-    player.update_data();
-    await delay(1000000);
+    await player.death_animation();
 
     //await chroma.destruct();
     console.log('done');
