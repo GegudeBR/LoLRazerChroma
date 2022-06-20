@@ -2,8 +2,11 @@ var Enum = require('enum');
 
 const AnimationType = new Enum ({
   ALLY_BARON: "ally_baron",
+  ALLY_DRAGON_AIR: "ally_dragon_air",
+  ALLY_DRAGON_EARTH: "ally_dragon_earth",
   ALLY_DRAGON_FIRE: "ally_dragon_fire",
   ALLY_DRAGON_HEXTECH: "ally_dragon_hextech",
+  ALLY_DRAGON_WATER: "ally_dragon_water",
   DEATH: "death",
   LEVEL_UP: "level_up",
   LOADING: "loading",
@@ -30,11 +33,20 @@ class Animation {
         case AnimationType.ALLY_BARON.value:
           await this.ally_baron_animation();
           break;
+        case AnimationType.ALLY_DRAGON_AIR.value:
+          await this.ally_dragon_animation("Air");
+          break;
+        case AnimationType.ALLY_DRAGON_EARTH.value:
+          await this.ally_dragon_animation("Earth");
+          break;
         case AnimationType.ALLY_DRAGON_FIRE.value:
           await this.ally_dragon_animation("Fire");
           break;
         case AnimationType.ALLY_DRAGON_HEXTECH.value:
           await this.ally_dragon_animation("Hextech");
+          break;
+        case AnimationType.ALLY_DRAGON_WATER.value:
+          await this.ally_dragon_animation("Water");
           break;
         case AnimationType.DEATH.value:
           await this.death_animation();
