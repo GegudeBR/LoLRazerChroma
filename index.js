@@ -19,8 +19,8 @@ const app = {
 
 let chroma = new ChromaSDK(app);
 let keyboard = new Keyboard(chroma);
-let player = new PlayerData(chroma, keyboard);
 let animation = new Animation(keyboard);
+let player = new PlayerData(keyboard, animation);
 let AnimationType = Animation.AnimationType;
 
 const delay = ms =>
