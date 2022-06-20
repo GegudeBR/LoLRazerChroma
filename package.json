@@ -1,6 +1,6 @@
 {
   "name": "LoLRazerChroma",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "League of Legends Razer Chroma implementation",
   "main": "index.js",
   "repository": {
@@ -12,10 +12,9 @@
     "start": "node index.js"
   },
   "dependencies": {
-    "@chromasdk/chromajs": "^0.1.1",
     "cross-fetch": "^3.1.5",
+    "enum": "^3.0.4",
     "fetch": "^1.1.0",
-    "node-fetch": "^3.2.6",
-    "xhr2": "^0.2.1"
+    "node-fetch": "^3.2.6"
   }
 }
