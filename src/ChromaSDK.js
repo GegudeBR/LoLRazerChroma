@@ -71,19 +71,24 @@ class CromaSDK {
     }
 
     //print(keyboard_object);
-    const keyboard_response = await fetch(`${this.uri}/keyboard`, {
-      method: method_used,
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: keyboard_object
-    });
-    let response = await keyboard_response.json();
-    //print(response)
-    print('keyboard_effect(' + effect, + ', ' + data + ', ' + precreate + ') returns ' + response.result);
-    if (precreate) {
-      return response.id;
+    try {
+      const keyboard_response = await fetch(`${this.uri}/keyboard`, {
+        method: method_used,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: keyboard_object
+      });
+      let response = await keyboard_response.json();
+      //print(response)
+      print('keyboard_effect(' + effect, + ', ' + data + ', ' + precreate + ') returns ' + response.result);
+      if (precreate) {
+        return response.id;
+      }
+    } catch (error) {
+      console.error(error);
     }
+    
   }
 
   async set_effect(id) {
