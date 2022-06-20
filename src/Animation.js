@@ -1,7 +1,7 @@
 var Enum = require('enum');
 
 const AnimationType = new Enum ({
-  ALLY_BARRON: "ally_barron",
+  ALLY_BARON: "ally_baron",
   ALLY_DRAGON_FIRE: "ally_dragon_fire",
   ALLY_DRAGON_HEXTECH: "ally_dragon_hextech",
   DEATH: "death",
@@ -27,8 +27,8 @@ class Animation {
     if (this.queue.length > 0 && !this.keyboard.suspend_update) {
       const animation = this.queue.shift();
       switch (animation) {
-        case AnimationType.ALLY_BARRON.value:
-          await this.ally_barron_animation();
+        case AnimationType.ALLY_BARON.value:
+          await this.ally_baron_animation();
           break;
         case AnimationType.ALLY_DRAGON_FIRE.value:
           await this.ally_dragon_animation("Fire");
@@ -50,7 +50,7 @@ class Animation {
     }
   }
 
-  async ally_barron_animation() {
+  async ally_baron_animation() {
     this.keyboard.suspend_update = true;
     await this.keyboard.blink(0xFF0000, 25, 5);
     this.keyboard.clear_keyboard();
