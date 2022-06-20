@@ -27,7 +27,6 @@ class Keyboard {
 
   async automatic_update() {
     if (this.suspend_update) {
-      console.log("Update skipped")
       return;
     }
     await this.update();

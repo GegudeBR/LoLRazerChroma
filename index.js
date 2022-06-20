@@ -1,5 +1,6 @@
 const Animation = require('./src/Animation.js');
 const ChromaSDK = require('./src/ChromaSDK.js');
+const GameController = require('./src/GameController.js');
 const Keyboard = require('./src/Keyboard.js');
 const PlayerData = require('./src/PlayerData.js');
 
@@ -21,6 +22,7 @@ let chroma = new ChromaSDK(app);
 let keyboard = new Keyboard(chroma);
 let animation = new Animation(keyboard);
 let player = new PlayerData(keyboard, animation);
+let game = new GameController(animation);
 let AnimationType = Animation.AnimationType;
 
 const delay = ms =>
@@ -37,8 +39,6 @@ async function start() {
     animation.add("level_up");
     await delay(1000);
 
-    animation.add("death");
-    animation.add("ally_dragon");
     //await player.death_animation();
     //await keyboard.blink(0xFF0000, 25, 5);
     //keyboard.clear_keyboard();
