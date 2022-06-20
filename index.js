@@ -37,6 +37,7 @@ async function start() {
     animation.add("level_up");
     await delay(1000);
 
+    animation.add("death");
     animation.add("ally_dragon");
     //await player.death_animation();
     //await keyboard.blink(0xFF0000, 25, 5);

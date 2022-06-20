@@ -3,6 +3,7 @@ var Enum = require('enum');
 const AnimationType = new Enum ({
   ALLY_BARRON: "ally_barron",
   ALLY_DRAGON: "ally_dragon",
+  DEATH: "death",
   LEVEL_UP: "level_up",
 });
 
@@ -29,6 +30,9 @@ class Animation {
           break;
         case AnimationType.ALLY_DRAGON.value:
           await this.ally_dragon_animation("Fire");
+          break;
+        case AnimationType.DEATH.value:
+          await this.death_animation();
           break;
         case AnimationType.LEVEL_UP.value:
           await this.level_up_animation();
@@ -86,6 +90,11 @@ class Animation {
     this.keyboard.suspend_update = false;
   }
 
+  async death_animation() {
+    this.keyboard.suspend_update = true;
+    await this.keyboard.blink(0xff, 10, 8);
+    this.keyboard.suspend_update = false;
+  }
 
   async add(animation) {
     this.queue.push(animation);

@@ -14,12 +14,11 @@ function between(min, max) {
 
 class PlayerData {
 
-  constructor(cromasdk, keyboard) {
-    this.chromasdk = cromasdk;
+  constructor(keyboard, animation) {
     this.keyboard = keyboard;
+    this.animation = animation;
     this.player_alive = true;
-    this.playing_animation = false;
-    this.leveled = false;
+    this.player_level = 0;
     this.refresh = setInterval(() => this.update_data(), 100);
   }
 
@@ -34,9 +33,8 @@ class PlayerData {
         })
       })
       const response = await request.json();
-      this.leveled = false;
       if(this.player_level != response.level) {
-        this.leveled = true;
+        this.animation.add("level_up");
       }
       this.player_level = response.level;
       this.player_health_max = response.championStats.maxHealth;
@@ -46,17 +44,13 @@ class PlayerData {
       this.player_resource_current = response.championStats.resourceValue;
       this.player_health_percent = (this.player_health_current / this.player_health_max) * 100;
       this.player_resource_percent = (this.player_resource_current / this.player_resource_max) * 100;
-      
+
+      if (this.is_alive() == false && this.player_alive == true) { // If player just died
+        this.animation.add("death");
+      }
 
       // Prepare data for Chroma
-      
       this.keyboard.clear_keyboard();
-      if (this.leveled) {
-        await this.levelup_animation();
-      }
-      if (this.is_alive() == false && this.player_alive == true) { // If player just died
-        await this.death_animation();
-      }
       if(!this.keyboard.suspend_update) {
         this.get_health_data();
         this.get_resource_data();
@@ -104,12 +98,6 @@ class PlayerData {
         }
       }
     }
-  }
-
-  async death_animation() {
-    this.keyboard.suspend_update = true;
-    await this.keyboard.blink(0xff, 10, 8);
-    this.keyboard.suspend_update = false;
   }
 
 }
