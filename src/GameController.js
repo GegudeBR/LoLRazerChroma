@@ -29,7 +29,8 @@ class GameController {
           rejectUnauthorized: false
         })
       });
-      this.player_name = await request.text();
+      const response = await request.json();
+      this.player_name = response;
       this.get_teammates();
     } catch (error) {
       //console.log(error);

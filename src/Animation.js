@@ -65,7 +65,7 @@ class Animation {
   async ally_baron_animation() {
     this.keyboard.suspend_update = true;
     await this.keyboard.blink(0xFF0000, 25, 5);
-    this.keyboard.clear_keyboard();
+    this.keyboard.suspend_update = false;
   }
 
   async ally_dragon_animation(dragon_type) {
