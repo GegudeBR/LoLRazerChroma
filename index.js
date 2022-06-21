@@ -19,11 +19,11 @@ const app = {
 }
 
 let chroma = new ChromaSDK(app);
-let keyboard = new Keyboard(chroma);
-let animation = new Animation(keyboard);
-let player = new PlayerData(keyboard, animation);
-let game = new GameController(animation);
-let AnimationType = Animation.AnimationType;
+let keyboard;
+let animation;
+let player;
+let game;
+
 
 const delay = ms =>
   new Promise((res, rej) => {
@@ -35,6 +35,12 @@ async function start() {
   try {
     
     await chroma.connect();
+    // Wait until ChromaSDK is ready
+    await delay(1000);
+    keyboard = new Keyboard(chroma);
+    animation = new Animation(keyboard);
+    player = new PlayerData(keyboard, animation);
+    game = new GameController(animation);
     await delay(5000);
     animation.add("level_up");
     await delay(1000);
