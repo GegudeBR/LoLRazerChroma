@@ -37,7 +37,9 @@ class CromaSDK {
       let response = await create_response.json();
       this.uri = response.uri;
       this.sessionid = response.sessionid;
-      print(`Created Chroma at ${this.uri}`);
+      if (this.uri != null) { // If connection is successfully
+        print('Connection estabilished to ' + this.uri);
+      }
 
       this.heartbeat = setInterval(() => this.send_heartbeat(), 10000);
     } catch (err) {

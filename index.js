@@ -2,6 +2,7 @@ const Animation = require('./src/Animation.js');
 const ChromaSDK = require('./src/ChromaSDK.js');
 const GameController = require('./src/GameController.js');
 const Keyboard = require('./src/Keyboard.js');
+const Mouse = require('./src/Mouse.js');
 const PlayerData = require('./src/PlayerData.js');
 
 const app = {
@@ -20,6 +21,7 @@ const app = {
 
 let chroma = new ChromaSDK(app);
 let keyboard;
+let mouse;
 let animation;
 let player;
 let game;
@@ -38,12 +40,11 @@ async function start() {
     // Wait until ChromaSDK is ready
     await delay(1000);
     keyboard = new Keyboard(chroma);
+    mouse = new Mouse(chroma);
     animation = new Animation(keyboard);
     player = new PlayerData(keyboard, animation);
     game = new GameController(animation);
     await delay(5000);
-    animation.add("level_up");
-    await delay(1000);
 
     //await player.death_animation();
     //await keyboard.blink(0xFF0000, 25, 5);

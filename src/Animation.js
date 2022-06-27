@@ -20,9 +20,10 @@ const delay = ms =>
 
 class Animation {
 
-  constructor(keyboard) {
+  constructor(keyboard, mouse) {
     this.queue = [];
     this.keyboard = keyboard;
+    this.mouse = mouse;
     this.refresh = setInterval(() => this.update(), 50);
   }
 

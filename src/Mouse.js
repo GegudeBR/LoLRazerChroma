@@ -1,11 +1,5 @@
 const frame_std = 20;
 
-function between(min, max) {
-  return Math.floor(
-    Math.random() * (max - min + 1) + min
-  )
-}
-
 const delay = ms =>
   new Promise((res, rej) => {
     setTimeout(res, ms);
