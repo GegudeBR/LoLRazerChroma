@@ -88,7 +88,49 @@ class CromaSDK {
     } catch (error) {
       console.error(error);
     }
-    
+    return;
+  }
+
+  async mouse_effect(effect, data, precreate = false) {
+    var method_used = 'PUT';
+    if (precreate) {
+      method_used = 'POST';
+    }
+
+    if (!this.application.device_supported.includes('mouse')) {
+      return;
+    }
+
+    var mouse_object;
+
+    if (effect == "CHROMA_NONE") {
+      mouse_object = JSON.stringify({ "effect": effect });
+    } else if (effect == "CHROMA_CUSTOM2") {
+      mouse_object = JSON.stringify({ "effect": effect, "param": data });
+    } else if (effect == "CHROMA_STATIC") {
+      var color = { "color": data };
+      mouse_object = JSON.stringify({ "effect": effect, "param": color });
+    }
+
+    //print(mouse_object);
+    try {
+      const mouse_response = await fetch(`${this.uri}/mouse`, {
+        method: method_used,
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: mouse_object
+      });
+      let response = await mouse_response.json();
+      //print(response)
+      print('mouse_effect(' + effect, + ', ' + data + ', ' + precreate + ') returns ' + response.result);
+      if (precreate) {
+        return response.id;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return;
   }
 
   async set_effect(id) {
