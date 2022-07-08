@@ -1,7 +1,7 @@
 const fetch = require('cross-fetch');
 const https = require('https');
 
-const ActivePlayer = require('./Classes/ActivePlayer.js');
+const GameController = require('./Classes/GameController.js');
 
 const delay = ms =>
   new Promise((res, rej) => {
@@ -10,9 +10,8 @@ const delay = ms =>
 
 class LeagueOfLegendsController {
   constructor() {
-    this.ActivePlayer = new ActivePlayer();
+    this.GameController = new GameController();
     this.loading();
-    
     this.wait_game_to_start();
   }
 
@@ -58,7 +57,7 @@ class LeagueOfLegendsController {
         })
       });
       const response = await request.json();
-      this.ActivePlayer.update(response.activePlayer);
+      this.GameController.update(response);
     } catch (error) {
     }
   }
